@@ -1,0 +1,61 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: serviceflow-backend
+
+  # ── H2 In-Memory Database (dev profile – no MySQL needed) ──
+  datasource:
+    url: jdbc:h2:mem:serviceflow_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;NON_KEYWORDS=USER
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop      # auto-creates schema from entities on startup
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    open-in-view: false
+
+  sql:
+    init:
+      mode: never     # Seeding handled by DataSeeder CommandLineRunner (runs after JPA creates schema)
+
+# ── JWT ──────────────────────────────────────────────────────
+app:
+  jwt:
+    secret: 5c4e3b2a1f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b
+    expiration-ms: 86400000
+
+  sla:
+    low: 48
+    medium: 24
+    high: 4
+    critical: 2
+
+  upload:
+    dir: ./uploads
+    max-file-size: 10485760
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.serviceflow: DEBUG
+    org.springframework.security: INFO

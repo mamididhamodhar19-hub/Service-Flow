@@ -1,0 +1,94 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: serviceflow-backend
+
+  profiles:
+    active: dev    # Switch to 'prod' when MySQL is configured
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/serviceflow_db?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+    username: root
+    password: root          # ← Change to your MySQL root password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: ServiceFlowHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate       # validate after schema is created by SQL script
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Kolkata
+    open-in-view: false
+
+  sql:
+    init:
+      mode: never              # schema is managed via schema.sql / seed.sql manually
+
+  # Mail (optional – configure SMTP only if email notifications are needed)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-app-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# ── Application-level JWT settings ──
+app:
+  jwt:
+    secret: 5c4e3b2a1f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b
+    expiration-ms: 86400000   # 24 hours in milliseconds
+
+  # Ticket SLA durations (in hours)
+  sla:
+    low: 48
+    medium: 24
+    high: 4
+    critical: 2
+
+  # File Upload
+  upload:
+    dir: ./uploads
+    max-file-size: 10485760   # 10 MB in bytes
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    com.serviceflow: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN

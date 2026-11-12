@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceFlow – Enterprise Service & Complaint Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top right, #1e1b4b, #0f172a 70%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+    .brand-title { font-size: 1.5rem; font-weight: 700; }
+    .brand-subtitle { font-size: 0.875rem; color: var(--text-muted); }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+    }
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .link-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .link-card:hover {
+      transform: translateY(-2px);
+      border-color: #6366f1;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .link-card .title {
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .link-card .desc { font-size: 0.8rem; color: var(--text-muted); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 860px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .card h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .accounts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-bottom: 1.25rem;
+    }
+    .account-pill {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .account-pill:hover {
+      border-color: var(--primary);
+      background: #1e1b4b;
+    }
+    .account-pill .role {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      background: #312e81;
+      color: #c7d2fe;
+    }
+    .account-pill .email { font-size: 0.85rem; font-weight: 500; }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: white;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+    button {
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+    }
+    .btn-success { background: #059669; color: white; }
+    .btn-success:hover { background: #047857; }
+    .btn-warning { background: #d97706; color: white; }
+    .btn-warning:hover { background: #b45309; }
+    .logged-in-bar {
+      background: #1e1b4b;
+      border: 1px solid #4338ca;
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ticket-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+    .ticket-table th, .ticket-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .ticket-table th { color: var(--text-muted); font-weight: 600; }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-OPEN { background: #1e3a8a; color: #93c5fd; }
+    .badge-ASSIGNED { background: #4c1d95; color: #c4b5fd; }
+    .badge-IN_PROGRESS { background: #78350f; color: #fde68a; }
+    .badge-RESOLVED { background: #064e3b; color: #6ee7b7; }
+    .badge-CLOSED { background: #374151; color: #d1d5db; }
+    .badge-CRITICAL { background: #7f1d1d; color: #fca5a5; }
+    .badge-HIGH { background: #831843; color: #fbcfe8; }
+    .badge-MEDIUM { background: #713f12; color: #fef08a; }
+    .badge-LOW { background: #14532d; color: #bbf7d0; }
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+    .alert-success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #a7f3d0; }
+    .alert-error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div class="brand-title">ServiceFlow</div>
+        <div class="brand-subtitle">Enterprise Service Request & Complaint Management System</div>
+      </div>
+    </div>
+    <div class="status-badge" id="systemStatus">
+      <span class="dot"></span>
+      <span id="statusText">System Active (port 8080)</span>
+    </div>
+  </header>
+
+  <!-- Quick Links -->
+  <div class="quick-links">
+    <a href="/swagger-ui/index.html" target="_blank" class="link-card">
+      <div class="title">Swagger UI <span>↗</span></div>
+      <div class="desc">Interactive REST API documentation & testing console</div>
+    </a>
+    <a href="/h2-console" target="_blank" class="link-card">
+      <div class="title">H2 DB Console <span>↗</span></div>
+      <div class="desc">In-memory DB (JDBC: jdbc:h2:mem:serviceflow_db)</div>
+    </a>
+    <a href="/api/health" target="_blank" class="link-card">
+      <div class="title">Health Endpoint <span>↗</span></div>
+      <div class="desc">Live service health & status JSON verification</div>
+    </a>
+    <a href="/api-docs" target="_blank" class="link-card">
+      <div class="title">OpenAPI Spec <span>↗</span></div>
+      <div class="desc">Raw OpenAPI v3 JSON specification schema</div>
+    </a>
+  </div>
+
+  <div id="alertBox" class="alert hidden"></div>
+
+  <div class="grid-2">
+    <!-- Left Column: Authentication -->
+    <div class="card">
+      <h2>🔐 Authentication</h2>
+      
+      <div id="unauthSection">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+          Click any pre-seeded demo user below to autofill and test:
+        </p>
+        
+        <div class="accounts-list">
+          <div class="account-pill" onclick="fillLogin('admin@serviceflow.com', 'Password@123')">
+            <div>
+              <div class="email">admin@serviceflow.com</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Admin User</div>
+            </div>
+            <span class="role">ADMIN</span>
+          </div>
+
+          <div class="account-pill" onclick="fillLogin('support1@serviceflow.com', 'Password@123')">
+            <div>
+              <div class="email">support1@serviceflow.com</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Support Agent 1</div>
+            </div>
+            <span class="role">SUPPORT</span>
+          </div>
+
+          <div class="account-pill" onclick="fillLogin('alice@example.com', 'Password@123')">
+            <div>
+              <div class="email">alice@example.com</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Alice Customer</div>
+            </div>
+            <span class="role">CUSTOMER</span>
+          </div>
+
+          <div class="account-pill" onclick="fillLogin('bob@example.com', 'Password@123')">
+            <div>
+              <div class="email">bob@example.com</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Bob Customer</div>
+            </div>
+            <span class="role">CUSTOMER</span>
+          </div>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" required value="alice@example.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" required value="Password@123">
+          </div>
+          <button type="submit" class="btn-primary" id="loginBtn">Sign In</button>
+        </form>
+      </div>
+
+      <div id="authSection" class="hidden">
+        <div class="logged-in-bar">
+          <div>
+            <div id="userName" style="font-weight: 600; font-size: 0.95rem;"></div>
+            <div id="userEmail" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+          </div>
+          <button onclick="handleLogout()" class="btn-sm" style="background:#475569; color:white;">Logout</button>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); word-break: break-all; background: #0f172a; padding: 0.65rem; border-radius: 8px;">
+          <strong>JWT Bearer Token:</strong><br>
+          <span id="jwtDisplay"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Tickets & Actions -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+        <h2>🎫 Tickets & Service Requests</h2>
+        <button onclick="loadTickets()" class="btn-sm btn-primary" style="width: auto;">Refresh</button>
+      </div>
+
+      <div id="ticketsNotice" style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 2rem 0;">
+        Sign in with an account on the left to view and manage tickets.
+      </div>
+
+      <div id="ticketsContainer" class="hidden">
+        <!-- New Ticket Form (for Customer) -->
+        <div id="newTicketBox" style="background: #0f172a; padding: 1rem; border-radius: 12px; margin-bottom: 1.25rem;">
+          <h3 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Create New Support Ticket</h3>
+          <form onsubmit="handleCreateTicket(event)">
+            <div class="form-group">
+              <label>Ticket Title</label>
+              <input type="text" id="ticketTitle" placeholder="e.g. Cannot access payment gateway" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label>Category</label>
+                <select id="ticketCategory" required></select>
+              </div>
+              <div class="form-group">
+                <label>Priority</label>
+                <select id="ticketPriority" required>
+                  <option value="LOW">LOW</option>
+                  <option value="MEDIUM" selected>MEDIUM</option>
+                  <option value="HIGH">HIGH</option>
+                  <option value="CRITICAL">CRITICAL</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="ticketDescription" rows="2" placeholder="Details of your request..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Submit Ticket</button>
+          </form>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="ticket-table">
+            <thead>
+              <tr>
+                <th>Ticket #</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ticketListBody">
+              <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No tickets found.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let authToken = localStorage.getItem('sf_token') || '';
+  let currentUser = null;
+
+  function showAlert(msg, isError = false) {
+    const box = document.getElementById('alertBox');
+    box.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
+    box.textContent = msg;
+    box.classList.remove('hidden');
+    setTimeout(() => box.classList.add('hidden'), 4000);
+  }
+
+  function fillLogin(email, pass) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').value = pass;
+    document.getElementById('loginBtn').click();
+  }
+
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async function handleLogin(e) {
+    if (e) e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) throw new Error('Invalid credentials');
+      const data = await res.json();
+      authToken = data.token;
+      localStorage.setItem('sf_token', authToken);
+      currentUser = parseJwt(authToken);
+      updateAuthUI();
+      loadCategories();
+      loadTickets();
+      showAlert('Signed in as ' + (currentUser ? currentUser.sub : email));
+    } catch (err) {
+      showAlert(err.message, true);
+    }
+  }
+
+  function handleLogout() {
+    authToken = '';
+    currentUser = null;
+    localStorage.removeItem('sf_token');
+    updateAuthUI();
+  }
+
+  function updateAuthUI() {
+    const unauth = document.getElementById('unauthSection');
+    const auth = document.getElementById('authSection');
+    const notice = document.getElementById('ticketsNotice');
+    const container = document.getElementById('ticketsContainer');
+
+    if (authToken && currentUser) {
+      unauth.classList.add('hidden');
+      auth.classList.remove('hidden');
+      notice.classList.add('hidden');
+      container.classList.remove('hidden');
+
+      document.getElementById('userName').textContent = currentUser.name || currentUser.sub;
+      document.getElementById('userEmail').textContent = currentUser.roles || 'USER';
+      document.getElementById('jwtDisplay').textContent = authToken.substring(0, 35) + '...';
+
+      const isCustomer = (currentUser.roles || '').includes('ROLE_CUSTOMER');
+      document.getElementById('newTicketBox').style.display = isCustomer ? 'block' : 'none';
+    } else {
+      unauth.classList.remove('hidden');
+      auth.classList.add('hidden');
+      notice.classList.remove('hidden');
+      container.classList.add('hidden');
+    }
+  }
+
+  async function loadCategories() {
+    try {
+      const res = await fetch('/api/categories');
+      if (res.ok) {
+        const categories = await res.json();
+        const select = document.getElementById('ticketCategory');
+        select.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      }
+    } catch (e) {
+      console.warn('Failed loading categories', e);
+    }
+  }
+
+  async function loadTickets() {
+    if (!authToken) return;
+    try {
+      const res = await fetch('/api/tickets', {
+        headers: { 'Authorization': 'Bearer ' + authToken }
+      });
+      if (res.ok) {
+        const tickets = await res.json();
+        renderTickets(tickets);
+      }
+    } catch (e) {
+      showAlert('Failed to load tickets', true);
+    }
+  }
+
+  function renderTickets(tickets) {
+    const tbody = document.getElementById('ticketListBody');
+    if (!tickets || tickets.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:1rem;">No tickets available.</td></tr>';
+      return;
+    }
+    const isStaff = (currentUser.roles || '').includes('ROLE_ADMIN') || (currentUser.roles || '').includes('ROLE_SUPPORT');
+    tbody.innerHTML = tickets.map(t => `
+      <tr>
+        <td style="font-family:monospace; font-weight:600;">${t.ticketNumber}</td>
+        <td><strong>${escapeHtml(t.title)}</strong><br><small style="color:var(--text-muted)">${escapeHtml(t.description || '')}</small></td>
+        <td>${escapeHtml(t.categoryName || '')}</td>
+        <td><span class="badge badge-${t.priority}">${t.priority}</span></td>
+        <td><span class="badge badge-${t.status}">${t.status}</span></td>
+        <td>
+          ${isStaff && t.status !== 'RESOLVED' && t.status !== 'CLOSED' ? `
+            <button onclick="updateTicketStatus(${t.id}, 'RESOLVED')" class="btn-sm btn-success">Resolve</button>
+          ` : '<span style="color:var(--text-muted); font-size:0.75rem;">-</span>'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function handleCreateTicket(e) {
+    e.preventDefault();
+    const title = document.getElementById('ticketTitle').value;
+    const categoryId = document.getElementById('ticketCategory').value;
+    const priority = document.getElementById('ticketPriority').value;
+    const description = document.getElementById('ticketDescription').value;
+
+    try {
+      const res = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken
+        },
+        body: JSON.stringify({ title, categoryId, priority, description })
+      });
+      if (!res.ok) throw new Error('Failed to create ticket');
+      showAlert('Ticket created successfully!');
+      document.getElementById('ticketTitle').value = '';
+      document.getElementById('ticketDescription').value = '';
+      loadTickets();
+    } catch (err) {
+      showAlert(err.message, true);
+    }
+  }
+
+  async function updateTicketStatus(id, status) {
+    try {
+      const res = await fetch(`/api/tickets/${id}/status?status=${status}`, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + authToken }
+      });
+      if (!res.ok) throw new Error('Status update failed');
+      showAlert(`Ticket #${id} marked as ${status}`);
+      loadTickets();
+    } catch (err) {
+      showAlert(err.message, true);
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Initial setup on load
+  if (authToken) {
+    currentUser = parseJwt(authToken);
+    updateAuthUI();
+    loadCategories();
+    loadTickets();
+  }
+</script>
+
+</body>
+</html>

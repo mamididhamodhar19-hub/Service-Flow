@@ -1,0 +1,27 @@
+# Compiled binaries and build outputs
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Tools and Local database binaries
+tools/
+uploads/
+uploads-test/
+
+# OS specific files
+.DS_Store
+Thumbs.db
